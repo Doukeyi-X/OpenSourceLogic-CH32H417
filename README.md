@@ -25,6 +25,8 @@
 
 请用 [MounRiver Studio](http://www.mounriver.com/) 打开 APP / IAP 的 `.wvsln` 工程编译。`SRC/` 来自南京沁恒（WCH）官方库，仅可用于沁恒单片机，文件头版权仍属于 WCH。
 
+V5F 采集工程还需要链接 `CH32H417_Logic_Analyzer_APP/Common/ch32h417_uhsif_it.o`。这是沁恒提供的 UHSIF 预编译库（无对应源码），工程里已经带上。
+
 ### 预编译固件
 
 `prebuilt/` 里是已经编好的 V5F 镜像，可用 WCHISPTool / MounRiver 直接烧录：
@@ -42,6 +44,7 @@ https://github.com/Doukeyi-X/ALL-LOGIC
 
 - 本仓库中的逻辑分析仪应用 / IAP 代码：GNU GPLv3 或更高版本（见 `LICENSE`）
 - `SRC/` 及带有 WCH 版权头的文件：遵循文件头中沁恒的许可（仅用于其 MCU）
+- `ch32h417_uhsif_it.o`：沁恒 UHSIF 预编译对象，无源码，仅可用于 CH32H417
 
 ### 给个 Star，也欢迎提 Issue
 
@@ -80,6 +83,8 @@ This repository is **firmware only** (application + IAP) plus prebuilt V5F image
 
 Build the APP / IAP `.wvsln` projects with [MounRiver Studio](http://www.mounriver.com/). Files under `SRC/` and those with WCH headers are from Nanjing Qinheng and may only be used on WCH microcontrollers.
 
+The V5F capture project also links `CH32H417_Logic_Analyzer_APP/Common/ch32h417_uhsif_it.o`, a WCH-supplied UHSIF object with no corresponding source.
+
 ### Prebuilt images
 
 Flash the V5F images in `prebuilt/` with WCHISPTool or MounRiver:
@@ -93,6 +98,7 @@ Flash the V5F images in `prebuilt/` with WCHISPTool or MounRiver:
 
 - Application / IAP code in this repo: GNU GPLv3 or later (`LICENSE`)
 - `SRC/` and WCH-headered files: follow the license in each file header
+- `ch32h417_uhsif_it.o`: WCH UHSIF precompiled object, no source, CH32H417 only
 
 ### Feedback
 
