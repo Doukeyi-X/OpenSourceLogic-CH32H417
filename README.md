@@ -47,31 +47,34 @@ ALL LOGIC 按本仓库这套 APP / IAP 的 USB 协议和升级流程对接。
 **第一次（空片 / 还没有本仓库 IAP）**
 
 1. 安装 [MounRiver Studio](http://www.mounriver.com/)，或直接用 `prebuilt/` 里编好的镜像。
-2. 打开 `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`，编译后得到 IAP；也可直接用 `prebuilt/CH32H417_IAP_V5F.bin`。若编译报 `No rule to make target`，对工程点 Clean 再编。
+2. 打开 `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`，编译 **V3F** 得到 IAP；也可直接用 `prebuilt/CH32H417_IAP_V3F.bin`。若编译报 `No rule to make target`，对工程点 Clean 再编。
 3. MRS 菜单 **Tools → WCH-LinkUtility**，用 WCH-LinkE 把 **IAP** 下到芯片。
 4. 用 Type-C 把分析仪接到电脑，打开 **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)**。
-5. 点工具栏 **「固件升级」**，选择本仓库的 APP：`prebuilt/CH32H417_Logic_Analyzer_V5F.bin`（或自己编出来的 APP `.bin`）。  
+5. 点工具栏 **「固件升级」**，选择 **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`**（或自己编出来的 `CH32H417_Logic_Analyzer_APP.bin`）。  
+   必须用这份双核合并的 **APP.bin**，不要选 `*_V5F.bin`（那只是 V5F 单核，缺 V3F）。  
    这和原 U3LogicAnalyzer 的「帮助 → 固件升级」是同一类操作。
 
 APP 下完即可在 ALL LOGIC 里采集。
 
 **以后升级 APP**
 
-不必再插 WCH-Link。USB 连上 ALL LOGIC，再点 **「固件升级」**，选新的 APP `.bin` 即可。通用上位机可以直接升级本仓库固件。
+不必再插 WCH-Link。USB 连上 ALL LOGIC，再点 **「固件升级」**，选新的 **`CH32H417_Logic_Analyzer_APP.bin`** 即可。通用上位机可以直接升级本仓库固件。
 
 ### 预编译镜像
 
 | 文件 | 用途 | 怎么下 |
 |------|------|--------|
-| `prebuilt/CH32H417_IAP_V5F.bin` / `.hex` | IAP（第一次） | WCH-Link / WCHISPTool |
-| `prebuilt/CH32H417_Logic_Analyzer_V5F.bin` / `.hex` | APP（采集） | ALL LOGIC「固件升级」 |
+| `prebuilt/CH32H417_IAP_V3F.bin` / `.hex` | IAP（第一次，与原开源页相同） | WCH-Link / WCHISPTool |
+| `prebuilt/CH32H417_Logic_Analyzer_APP.bin` | 双核合并 APP（采集） | ALL LOGIC「固件升级」 |
+
+`*_V3F.bin` / `*_V5F.bin` 是单核编译产物，**不能**拿去给上位机升级。
 
 ### 自己编译
 
 用 MounRiver Studio 打开：
 
-- IAP：`CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`
-- APP：先编 V3F，再编 V5F：`CH32H417_Logic_Analyzer_APP/CH32H417_Logic_Analyzer.wvsln`
+- IAP：打开 `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`，编译 V3F，产物为 `V3F/obj/CH32H417_IAP_V3F.bin`
+- APP：打开 `CH32H417_Logic_Analyzer_APP/CH32H417_Logic_Analyzer.wvsln`，**先编 V3F，再编 V5F**。MRS 会把两核合成 `V5F/obj/CH32H417_Logic_Analyzer_APP.bin`，上位机升级请选这个文件。
 
 `SRC/` 是南京沁恒官方库，只能用于沁恒 MCU。V5F 还要链接 `CH32H417_Logic_Analyzer_APP/Common/ch32h417_uhsif_it.o`（沁恒 UHSIF 预编译库，无对应源码，仓库里已带上）。
 
@@ -150,31 +153,34 @@ You need a **WCH-LinkE**. Connector **H1** on the left of the MCU: pin 1 SWCLK, 
 **First time (blank, or no IAP from this repo)**
 
 1. Install [MounRiver Studio](http://www.mounriver.com/), or use `prebuilt/`.
-2. Build `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`, or use `prebuilt/CH32H417_IAP_V5F.bin`. If make says `No rule to make target`, Clean the project and rebuild.
+2. Build the **V3F** target of `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`, or use `prebuilt/CH32H417_IAP_V3F.bin`. If make says `No rule to make target`, Clean the project and rebuild.
 3. **Tools → WCH-LinkUtility**, download **IAP** with WCH-LinkE.
 4. Plug the analyzer in over Type-C and open **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)**.
-5. Toolbar **Firmware Upgrade**, pick this repo’s APP: `prebuilt/CH32H417_Logic_Analyzer_V5F.bin` (or your own APP `.bin`).  
+5. Toolbar **Firmware Upgrade**, pick **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`** (or the `CH32H417_Logic_Analyzer_APP.bin` you built).  
+   Use this merged dual-core **APP.bin**. Do **not** pick `*_V5F.bin` (V5F core only, no V3F).  
    Same idea as U3LogicAnalyzer **Help → Firmware Upgrade**.
 
 After APP is on, capture in ALL LOGIC.
 
 **Later APP updates**
 
-No debugger. Connect USB, open ALL LOGIC, **Firmware Upgrade**, choose the new APP `.bin`. The generic host upgrades this firmware directly.
+No debugger. Connect USB, open ALL LOGIC, **Firmware Upgrade**, choose the new **`CH32H417_Logic_Analyzer_APP.bin`**. The generic host upgrades this firmware directly.
 
 ### Prebuilt images
 
 | File | Role | How to load |
 |------|------|-------------|
-| `prebuilt/CH32H417_IAP_V5F.bin` / `.hex` | IAP (first time) | WCH-Link / WCHISPTool |
-| `prebuilt/CH32H417_Logic_Analyzer_V5F.bin` / `.hex` | APP (capture) | ALL LOGIC Firmware Upgrade |
+| `prebuilt/CH32H417_IAP_V3F.bin` / `.hex` | IAP (first time, same as the original notes) | WCH-Link / WCHISPTool |
+| `prebuilt/CH32H417_Logic_Analyzer_APP.bin` | Merged dual-core APP (capture) | ALL LOGIC Firmware Upgrade |
+
+`*_V3F.bin` / `*_V5F.bin` are single-core build outputs. **Do not** feed them to the host upgrader.
 
 ### Build
 
 MounRiver Studio:
 
-- IAP: `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`
-- APP: build V3F, then V5F: `CH32H417_Logic_Analyzer_APP/CH32H417_Logic_Analyzer.wvsln`
+- IAP: `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`, build V3F → `V3F/obj/CH32H417_IAP_V3F.bin`
+- APP: `CH32H417_Logic_Analyzer_APP/CH32H417_Logic_Analyzer.wvsln`, **V3F first, then V5F**. MRS merges them into `V5F/obj/CH32H417_Logic_Analyzer_APP.bin`. That is the file to pick in the host.
 
 `SRC/` is Nanjing Qinheng’s library (WCH MCUs only). V5F also links `CH32H417_Logic_Analyzer_APP/Common/ch32h417_uhsif_it.o` (WCH UHSIF object, no source; shipped here).
 
