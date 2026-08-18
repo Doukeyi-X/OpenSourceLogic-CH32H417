@@ -52,7 +52,7 @@ https://github.com/Doukeyi-X/ALL-LOGIC
 
 遇到烧录、采集或编译问题，请开 Issue：
 
-https://github.com/Doukeyi-X/CH32H417-Logic-Analyzer/issues
+https://github.com/Doukeyi-X/OpenSourceLogic-CH32H417/issues
 
 ### Contributors
 
@@ -104,7 +104,7 @@ Flash the V5F images in `prebuilt/` with WCHISPTool or MounRiver:
 
 If this project helps you, please **Star** it.
 
-Issues: https://github.com/Doukeyi-X/CH32H417-Logic-Analyzer/issues
+Issues: https://github.com/Doukeyi-X/OpenSourceLogic-CH32H417/issues
 
 ### Contributors
 
