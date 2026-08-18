@@ -1,0 +1,17 @@
+# MounRiver / Eclipse
+.mrs/
+.settings/
+*.snapshot
+
+# Build
+**/obj/
+**/*.o
+**/*.d
+**/*.lst
+**/*.map
+**/*.elf
+!prebuilt/**
+
+# Junk
+.DS_Store
+Thumbs.db
