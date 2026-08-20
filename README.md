@@ -38,27 +38,35 @@ ALL LOGIC 按本仓库这套 APP / IAP 的 USB 协议和升级流程对接。
 
 烧的不是这份固件，上位机认不到设备，也升不了级。
 
-### 烧录和升级（与原开源页同一套流程）
+### 软件使用步骤（第一次）
 
-原工程说明里是两步：调试器先下 IAP，再用上位机「固件升级」下 APP。这里相同，只是上位机换成 ALL LOGIC。
+上位机请用 **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)**（[Releases](https://github.com/Doukeyi-X/ALL-LOGIC/releases) 下安装包或绿色版）。  
+原工程是：调试器先下 IAP，再用上位机「固件升级」下 APP。这里相同，只是上位机换成 ALL LOGIC。
 
 需要自备 **WCH-LinkE**。下载口是芯片左侧排针 **H1**：从上往下，第 1 脚 SWCLK，第 2 脚 SWDIO。板子没把 ISP 用的 USB/串口引出来；若要用 USB/串口 ISP，需飞线（USB：PA11/PA12，串口：PB6/PB7）。
 
-**第一次（空片 / 还没有本仓库 IAP）**
+1. **先烧 IAP**  
+   安装 [MounRiver Studio](http://www.mounriver.com/)，或直接用 `prebuilt/`。  
+   编译 `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln` 的 **V3F**，或用现成的 `prebuilt/CH32H417_IAP_V3F.bin`。MRS：**Tools → WCH-LinkUtility**，用 WCH-LinkE 把 IAP 下到芯片。烧完可拔掉调试器。
 
-1. 安装 [MounRiver Studio](http://www.mounriver.com/)，或直接用 `prebuilt/` 里编好的镜像。
-2. 打开 `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`，编译 **V3F** 得到 IAP；也可直接用 `prebuilt/CH32H417_IAP_V3F.bin`。若编译报 `No rule to make target`，对工程点 Clean 再编。
-3. MRS 菜单 **Tools → WCH-LinkUtility**，用 WCH-LinkE 把 **IAP** 下到芯片。
-4. 用 Type-C 把分析仪接到电脑，打开 **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)**。
-5. 点工具栏 **「固件升级」**，选择 **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`**（或自己编出来的 `CH32H417_Logic_Analyzer_APP.bin`）。  
+2. **用 Type-C 接到电脑，应枚举成 USB CDC**  
+   IAP 的 USB 是 CDC 串口（`1A86:5539`）。设备管理器里通常会出现一个 COM 口（Windows 自带 usbser，一般不用另装驱动）。看不到 COM 口时，换口、换线，或确认 IAP 已烧进去。
+
+3. **用 ALL LOGIC 升级 APP 固件**  
+   打开 ALL LOGIC，点工具栏 **「固件升级」**，选择 **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`**（或自己编出来的同名文件）。  
    必须用这份双核合并的 **APP.bin**，不要选 `*_V5F.bin`（那只是 V5F 单核，缺 V3F）。  
-   这和原 U3LogicAnalyzer 的「帮助 → 固件升级」是同一类操作。
+   上位机通过刚才的 CDC 串口把 APP 写进去。这和原 U3LogicAnalyzer 的「帮助 → 固件升级」是同一类操作。
 
-APP 下完即可在 ALL LOGIC 里采集。
+4. **第一次 APP 升完后打驱动**  
+   APP 跑起来后设备不再是 CDC，而是逻辑分析仪（USB2 `1A86:5537` / USB3 `1A86:5538`）。Windows 上要给这个设备装 **WinUSB**。  
+   用 [Zadig](https://zadig.akeo.ie/)：Options → List All Devices，选该设备，Driver 选 **WinUSB**，点 Install Driver。
 
-**以后升级 APP**
+5. **拔掉 USB，再插一次**  
+   让 WinUSB 重新枚举。
 
-不必再插 WCH-Link。USB 连上 ALL LOGIC，再点 **「固件升级」**，选新的 **`CH32H417_Logic_Analyzer_APP.bin`** 即可。通用上位机可以直接升级本仓库固件。
+6. **再打开 ALL LOGIC 采集**  
+   设备列表里应出现 CH32 逻辑分析仪，即可采样。  
+   以后只升级 APP 时：不必再烧 IAP、也不必再打驱动，USB 连上 ALL LOGIC，再点「固件升级」选新的 `CH32H417_Logic_Analyzer_APP.bin` 即可。
 
 ### 预编译镜像
 
@@ -144,27 +152,35 @@ ALL LOGIC speaks the USB protocol and IAP sequence of **this** APP / IAP.
 
 Wrong firmware → the host will not enumerate the analyzer or upgrade it.
 
-### Flash and upgrade (same flow as the original project)
+### Host software usage (first time)
 
-The OSHWHUB notes use a debugger for IAP, then the host **Firmware Upgrade** for APP. Same here; the host is ALL LOGIC.
+Use **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)** ([Releases](https://github.com/Doukeyi-X/ALL-LOGIC/releases) for the Windows setup or portable zip).  
+Same two-step flow as the original project: debugger loads IAP, then the host **Firmware Upgrade** loads APP.
 
 You need a **WCH-LinkE**. Connector **H1** on the left of the MCU: pin 1 SWCLK, pin 2 SWDIO from the top. ISP USB/UART are not brought out; fly-wire PA11/PA12 (USB) or PB6/PB7 (UART) if you need WCH ISP.
 
-**First time (blank, or no IAP from this repo)**
+1. **Flash IAP first**  
+   Install [MounRiver Studio](http://www.mounriver.com/), or use `prebuilt/`.  
+   Build the **V3F** target of `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`, or use `prebuilt/CH32H417_IAP_V3F.bin`. MRS: **Tools → WCH-LinkUtility**, download IAP with WCH-LinkE. You can unplug the debugger afterwards.
 
-1. Install [MounRiver Studio](http://www.mounriver.com/), or use `prebuilt/`.
-2. Build the **V3F** target of `CH32H417_Logic_Analyzer_IAP/CH32H417_IAP.wvsln`, or use `prebuilt/CH32H417_IAP_V3F.bin`. If make says `No rule to make target`, Clean the project and rebuild.
-3. **Tools → WCH-LinkUtility**, download **IAP** with WCH-LinkE.
-4. Plug the analyzer in over Type-C and open **[ALL LOGIC](https://github.com/Doukeyi-X/ALL-LOGIC)**.
-5. Toolbar **Firmware Upgrade**, pick **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`** (or the `CH32H417_Logic_Analyzer_APP.bin` you built).  
-   Use this merged dual-core **APP.bin**. Do **not** pick `*_V5F.bin` (V5F core only, no V3F).  
-   Same idea as U3LogicAnalyzer **Help → Firmware Upgrade**.
+2. **Plug in Type-C — it should enumerate as USB CDC**  
+   IAP is a CDC serial device (`1A86:5539`). Windows usually shows a COM port (built-in usbser; no extra driver). If there is no COM port, check the cable/port and that IAP is actually on the chip.
 
-After APP is on, capture in ALL LOGIC.
+3. **Upgrade APP firmware from ALL LOGIC**  
+   Open ALL LOGIC, toolbar **Firmware Upgrade**, pick **`prebuilt/CH32H417_Logic_Analyzer_APP.bin`** (or the merged `CH32H417_Logic_Analyzer_APP.bin` you built).  
+   Use this dual-core **APP.bin**. Do **not** pick `*_V5F.bin` (V5F core only, no V3F).  
+   The host writes APP through the CDC COM port. Same idea as U3LogicAnalyzer **Help → Firmware Upgrade**.
 
-**Later APP updates**
+4. **Install a driver after the first APP update**  
+   Once APP runs, the device is no longer CDC. It is the analyzer (`1A86:5537` USB 2 / `1A86:5538` USB 3). On Windows, bind it to **WinUSB**.  
+   Use [Zadig](https://zadig.akeo.ie/): Options → List All Devices, select the device, Driver **WinUSB**, Install Driver.
 
-No debugger. Connect USB, open ALL LOGIC, **Firmware Upgrade**, choose the new **`CH32H417_Logic_Analyzer_APP.bin`**. The generic host upgrades this firmware directly.
+5. **Unplug USB, then plug it in again**  
+   So WinUSB re-enumerates.
+
+6. **Open ALL LOGIC and capture**  
+   The CH32 analyzer should appear in the device list.  
+   Later APP updates: no IAP reflash, no second Zadig pass. Connect USB, **Firmware Upgrade**, pick the new `CH32H417_Logic_Analyzer_APP.bin`.
 
 ### Prebuilt images
 
